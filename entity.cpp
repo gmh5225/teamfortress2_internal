@@ -11,6 +11,11 @@ int C_BaseEntity::get_index() noexcept
     return call_vfunc<int>(IClientNetworkable(), 9);
 }
 
+const glm::vec3& C_BaseEntity::get_position() noexcept
+{
+    return call_vfunc<const glm::vec3&>(this, 9);
+}
+
 bool C_BaseEntity::is_alive() noexcept
 {
     return call_vfunc<bool>(this, 130);

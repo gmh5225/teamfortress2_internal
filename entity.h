@@ -12,6 +12,8 @@ public:
 	int get_index() noexcept;
 
 	// C_BaseEntity
+	const glm::vec3& get_position() noexcept;
+
 	bool is_alive() noexcept;
 	bool is_player() noexcept;
 	bool is_base_combat_character() noexcept;
@@ -34,3 +36,5 @@ class C_TFPlayer : public C_BaseCombatCharacter
 	void* IInventoryUpdateListener() noexcept { return this + 5476; }
 	void* C_TFMvMBossProgressUser() noexcept { return this + 5480; }
 };
+
+inline ref_ptr_t localplayer{ *reinterpret_cast<C_TFPlayer***>(find_pattern(L"client", "A1 ? ? ? ? C3 CC CC CC CC CC CC CC CC CC CC A1 ? ? ? ? 83 78") + 1) };

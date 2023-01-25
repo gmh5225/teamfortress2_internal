@@ -1,12 +1,19 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 #include "entitylist.h"
+#include "hooks.h"
 
 DWORD WINAPI main_thread(LPVOID)
 {
 	using AddListenerEntity_t = void(__thiscall*)(void* thisptr, void* entitylist);
 	const auto AddListenerEntity = reinterpret_cast<AddListenerEntity_t>(find_pattern(L"client", "55 8B EC 8B 91 ? ? ? ? 33 C0 56 57 8D B9 ? ? ? ? 85 D2 7E ? 8B 0F 8B 75 ? 8D 64 24 ? 39 31 74 ? 40 83 C1 ? 3B C2 7C ? 8D 45 ? 8B CF 50 E8 ? ? ? ? 5F 5E 5D C2 ? ? 85 C0"));
 	AddListenerEntity(**reinterpret_cast<std::byte***>(find_pattern(L"client", "A1 ? ? ? ? 66 8B 80") + 1), &entitylist);
+
+	MH_Initialize();
+
+	MH_CreateHook(find_pattern(L"client", "55 8B EC 83 EC ? A1 ? ? ? ? 56 57 8B F9 89 7D"), hooks::tf_player::create_move::detour, reinterpret_cast<void**>(&hooks::tf_player::create_move::original));
+
+	MH_EnableHook(MH_ALL_HOOKS);
 
 	return 0;
 }
