@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "hooks.h"
+#include "enginetrace.h"
 #include "entity.h"
 #include "entitylist.h"
 #include "usercmd.h"
@@ -46,19 +47,26 @@ bool __fastcall hooks::tf_player::create_move::detour(C_TFPlayer* player_ptr, in
 				{
 					if (mstudiohitboxset_t* set = studiohdr->get_hitbox_set(0))
 					{
-						if (mstudiobbox_t* head_bbox = set->get_hitbox(0))
+						if (mstudiobbox_t* head_bbox = set->get_hitbox(1))
 						{
 							C_TFPlayer* player = static_cast<C_TFPlayer*>(entity);
 							const glm::vec3 head_position = player->get_bone_position(head_bbox->bone);
 
-							const glm::vec3 rel_target_pos = head_position - localplayer->get_eye_position();
-							const float pitch = glm::degrees(glm::atan(-rel_target_pos.z, hypot(rel_target_pos.x, rel_target_pos.y)));
-							const float yaw = glm::degrees(glm::atan(rel_target_pos.y, rel_target_pos.x));
+							Ray_t ray{ localplayer->get_eye_position(), head_position };
+							trace_filter_t tr_filter{ { localplayer } };
+							trace_t trace{};
+							enginetrace->trace_ray(ray, MASK_SHOT | CONTENTS_GRATE, &tr_filter, &trace);
+							if (trace.entity == player)
+							{
+								const glm::vec3 rel_target_pos = head_position - localplayer->get_eye_position();
+								const float pitch = glm::degrees(glm::atan(-rel_target_pos.z, hypot(rel_target_pos.x, rel_target_pos.y)));
+								const float yaw = glm::degrees(glm::atan(rel_target_pos.y, rel_target_pos.x));
 
-							cmd->viewangles.x = pitch;
-							cmd->viewangles.y = yaw;
+								cmd->viewangles.x = pitch;
+								cmd->viewangles.y = yaw;
 
-							break;
+								break;
+							}
 						}
 					}
 				}

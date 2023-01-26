@@ -43,11 +43,10 @@ class ref_ptr_t
 	ptr_ty** ptr{};
 
 public:
-	ref_ptr_t(ptr_ty** ptr_ptr) : ptr{ ptr_ptr } {};
+	ref_ptr_t(ptr_ty** ptr_ptr) : ptr{ ptr_ptr } {}
 
-	ptr_ty* operator->() { return *ptr; }
-	bool operator==(void* cmp_ptr) { return *ptr == cmp_ptr; }
-	bool operator!=(void* cmp_ptr) { return *ptr != cmp_ptr; }
+	ptr_ty* operator ->() { return *ptr; }
+	operator ptr_ty*() { return *ptr; }
 };
 
 #endif //PCH_H

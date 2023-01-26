@@ -6,13 +6,6 @@ class mstudiobbox_t
 {
 public:
 	int bone{};
-
-private:
-	std::byte _0[4]{};
-
-public:
-	glm::vec3 min{};
-	glm::vec3 max{};
 };
 
 class mstudiohitboxset_t
